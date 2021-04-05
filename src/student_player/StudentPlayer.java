@@ -31,6 +31,10 @@ public class StudentPlayer extends PentagoPlayer {
         // Is random the best you can do?
         Move myMove = boardState.getRandomMove();
 
+        PentagoBoardState test = MyTools.test(boardState);
+        int eval = MyTools.evaluation(boardState);
+        System.out.print("Eval: " + String.valueOf(eval));
+
         // Return your move to be processed by the server.
         return myMove;
     }
