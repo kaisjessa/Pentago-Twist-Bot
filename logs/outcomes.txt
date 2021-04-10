@@ -41,3 +41,7 @@
 45,260910524,Human,1,Human,5,game00045.log,
 46,260910524,Human,1,Human,6,game00046.log,
 49,260910524,Human,1,Human,7,game00049.log,
+50,260910524,Human,GAMEOVER USER CANCEL UNDECIDED,NOBODY,0,game00050.log,USER CANCEL
+53,260910524,Human,1,Human,5,game00053.log,
+54,260910524,Human,1,Human,5,game00054.log,
+55,260910524,Human,1,Human,6,game00055.log,

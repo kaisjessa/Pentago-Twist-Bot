@@ -33,7 +33,6 @@ public class MyTools {
 
         legalMoves.sort(Comparator.comparingInt(a -> evalOtherMove(boardState, a, player)));
         current_move = legalMoves.get(numMoves-1);
-
         System.out.println("Best move eval: " + String.valueOf(evalMove(boardState, current_move, player)));
         return(current_move);
     }
@@ -66,6 +65,34 @@ public class MyTools {
         }
         return 1;
 
+    }
+
+//    public ArrayList<PentagoMove> getGoodMoves(PentagoBoardState state) {
+//        ArrayList<PentagoMove> moves = new ArrayList<PentagoMove>();
+//        for(int i = 0; i < PentagoBoardState.BOARD_SIZE; i++) {
+//            for(int j = 0; j < PentagoBoardState.BOARD_SIZE; j++) {
+//                if(state.getPieceAt(i,j) == Piece.EMPTY) {
+//                    for(int[] pair : getAdjacent(i, j)) {
+//                        if(state.getPieceAt(pair[0], pair[1]) != Piece.EMPTY) {
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    public ArrayList<int[]> getAdjacent(int x, int y) {
+        ArrayList<int[]> pairs = new ArrayList<int[]>();
+        for(int i=-1; i<=1; i++) {
+            for(int j=-1; j<=1; j++) {
+                if(0 <= x + i && x+i < PentagoBoardState.BOARD_SIZE && 0 <= y + j && y+j <= PentagoBoardState.BOARD_SIZE) {
+                    int[] temp = new int[]{x+i, y+j};
+                    pairs.add(temp);
+                }
+            }
+        }
+        return(pairs);
     }
 
 }
