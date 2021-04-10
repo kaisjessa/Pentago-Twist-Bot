@@ -38,16 +38,16 @@ public class StudentPlayer extends PentagoPlayer {
         Move myMove;
         // If we have a critical move, i.e., win or lose in one move
         PentagoMove tempMove = MyTools.bestMove(boardState);
-        PentagoBoardState tempBoard = (PentagoBoardState)boardState.clone();
-        tempBoard.processMove(tempMove);
-        if(MyTools.evaluation(boardState, player) != 0 || MyTools.evaluation(tempBoard, player) != 0) {
+        if(MyTools.evaluation(boardState, player) != 0 || MyTools.evalOtherMove(boardState, tempMove, player) != 0) {
             myMove = MyTools.bestMove(boardState);
+            System.out.println("USING GREEDY MOVE");
         }
         // Otherwise, perform Monte Carlo Tree Search
         else {
             MonteCarlo mcts = new MonteCarlo(boardState, player);
             myMove = mcts.bestMove();
             mcts.tree.root.printNode();
+            System.out.println("USING MCTS");
         }
 
 //        mcts.tree.printChildren(mcts.tree.root);
