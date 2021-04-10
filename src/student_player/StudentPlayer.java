@@ -4,6 +4,7 @@ import boardgame.Move;
 
 import pentago_twist.PentagoPlayer;
 import pentago_twist.PentagoBoardState;
+import pentago_twist.PentagoMove;
 
 /** A player file submitted by a student. */
 public class StudentPlayer extends PentagoPlayer {
@@ -32,6 +33,12 @@ public class StudentPlayer extends PentagoPlayer {
         //Move myMove = boardState.getRandomMove();
 
         Move myMove = MyTools.bestMove(boardState);
+
+        int player = boardState.getTurnPlayer();
+        MonteCarlo mcts = new MonteCarlo(boardState, player);
+
+        mcts.tree.printChildren(mcts.tree.root);
+        System.out.println("Number of children: " + mcts.tree.root.getNumChildren());
 
         // Return your move to be processed by the server.
         return myMove;
