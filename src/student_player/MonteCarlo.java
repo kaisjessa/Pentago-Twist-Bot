@@ -49,8 +49,11 @@ public class MonteCarlo {
     }
 
     public void expansion(Node node) {
-        Node newNode;
-        
+        PentagoBoardState state = node.getState();
+        for(PentagoMove move: state.getAllLegalMoves()) {
+            tree.addNode(state, move, node);
+        }
+
     }
 
     // Play random moves
@@ -75,5 +78,33 @@ public class MonteCarlo {
             currentNode.numWins += winner;
             currentNode = currentNode.getParent();
         }
+    }
+
+    // One complete iteration of MCTS
+    public void iteration() {
+        Node currentNode = selection();
+        expansion(currentNode);
+        for (int i = 0; i < 10; i++) {
+            int winner = simulation(currentNode.getState(), this.player);
+            backpropagate(currentNode, winner);
+        }
+    }
+
+    public PentagoMove bestMove() {
+        long x = System.currentTimeMillis();
+        while(System.currentTimeMillis() - x < 1500) {
+            iteration();
+        }
+        PentagoMove bestMove = this.tree.root.getChildren().get(0).getMove();
+        float currentMax = 0;
+        float temp;
+        for(Node node: this.tree.root.getChildren()) {
+            temp = (float)node.getNumWins()/(float)node.getNumGames();
+            if(temp > currentMax) {
+                currentMax = temp;
+                bestMove = node.getMove();
+            }
+        }
+        return bestMove;
     }
 }

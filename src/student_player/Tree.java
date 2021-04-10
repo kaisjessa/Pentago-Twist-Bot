@@ -46,7 +46,6 @@ public class Tree {
     public void printTree() {
         System.out.println("Printing tree...");
         for(Node node: allNodes) {
-            System.out.println(node.state.toString());
             System.out.println("Number of games: " + String.valueOf(node.getNumGames()));
             System.out.println("Number of wins: " + String.valueOf(node.getNumWins()));
         }

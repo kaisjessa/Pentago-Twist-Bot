@@ -64,4 +64,11 @@ public class Node {
     public PentagoBoardState getState() {
         return this.state;
     }
+    public PentagoMove getMove() {
+        return this.move;
+    }
+
+    public void printNode() {
+        System.out.println("Number of wins / Number of games = " + String.valueOf(this.getNumWins()) + " / " + String.valueOf(this.getNumGames()));
+    }
 }

@@ -24,6 +24,7 @@ public class MyTools {
         return newBoardState;
     }
 
+    // Returns the best move if we are able to win or stop a loss in the next turn
     public static PentagoMove bestMove(PentagoBoardState boardState) {
         ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
         int player = boardState.getTurnPlayer();
@@ -38,6 +39,7 @@ public class MyTools {
         return(current_move);
     }
 
+    // Evaluates opponents next move after trying our move
     public static int evalOtherMove(PentagoBoardState boardState, PentagoMove move, int player) {
         PentagoBoardState newBoardState = (PentagoBoardState) boardState.clone();
         newBoardState.processMove(move);
@@ -49,33 +51,19 @@ public class MyTools {
         return(minVal);
     }
 
-
+    // Evaluates our move on the current board
     public static int evalMove(PentagoBoardState boardState, PentagoMove move, int player) {
         PentagoBoardState newBoardState = (PentagoBoardState) boardState.clone();
         newBoardState.processMove(move);
         return(evaluation(newBoardState, player));
     }
 
+    // Returns 0 unless we can win or lose in one move
     public static int evaluation(PentagoBoardState boardState, int player) {
-//        int p1 = 0;
-//        int p2 = 0;
-//        Piece[][] pieces = boardState.getBoard();
-//        for (Piece[] pieceRow : pieces) {
-//            for (Piece piece : pieceRow) {
-//                if (piece.toString().equals("WHITE")) {
-//                    p1 += 1;
-//                } else if (piece.toString().equals("BLACK")) {
-//                    p2 += 1;
-//                }
-//            }
-//        }
-//        return (p1 - p2);
-//    }
-
         int winner = boardState.getWinner();
         if (winner == player) return Integer.MAX_VALUE - 1;
         else if (winner == Integer.MAX_VALUE - 1) {
-            return 3;
+            return 0;
         }
         return Integer.MIN_VALUE + 1;
 
