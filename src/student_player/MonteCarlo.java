@@ -27,16 +27,18 @@ public class MonteCarlo {
             return Integer.MAX_VALUE-1;
         }
         float q = (float)node.getNumWins() / (float)node.getNumGames();
-        q += Math.sqrt(2 * node.parent.getNumGames());
+        if(node.parent != null) q += Math.sqrt(2.0 * Math.log(node.parent.getNumGames()) / (float)node.getNumGames());
         return(q);
     }
 
     // Finds the next leaf node to explore
     public Node selection() {
         Node current = this.tree.root;
+        float currentMax;
+        Node nextNode;
         while(current.getNumChildren() > 0) {
-            float currentMax = 0;
-            Node nextNode = current.children.get(0);
+            nextNode = current.children.get(0);
+            currentMax = UCT(nextNode);
             for(Node node : current.getChildren()) {
                 if(UCT(node) > currentMax) {
                     currentMax = UCT(node);
@@ -51,35 +53,35 @@ public class MonteCarlo {
     // Create child nodes of selected node
     public void expansion(Node node) {
         PentagoBoardState state = node.getState();
-        for(PentagoMove move: state.getAllLegalMoves()) {
-            tree.addNode(state, move, node);
+        if (!node.state.gameOver()) {
+            for (PentagoMove move : state.getAllLegalMoves()) {
+                tree.addNode(state, move, node);
+            }
         }
     }
 
     // Play random moves
-    public int simulation(PentagoBoardState state, int player) {
+    public int simulation(PentagoBoardState state) {
         PentagoBoardState newState = (PentagoBoardState)state.clone();
         PentagoMove nextMove;
         while(!newState.gameOver()) {
             nextMove = (PentagoMove)newState.getRandomMove();
             newState.processMove(nextMove);
         }
-        int winner = newState.getWinner();
-        // Return 1 if we win
-        if(winner == player) return(1);
-        // Return 0 if we lose
-        if(winner == 1 - player) return(0);
-        // Return 0 if we tie
-        return(0);
+        return(newState.getWinner());
     }
 
     // Update the parent nodes after a simulation
     public void backpropagate(Node node, int winner) {
         Node currentNode = node;
         while(currentNode != null) {
-            // Increment by 1 since win = 1, tie = 0, loss = 0
-            currentNode.numGames += 1;
-            currentNode.numWins += winner;
+            currentNode.numGames += 2;
+            if(currentNode.getState().getTurnPlayer() == winner) {
+                currentNode.numWins += 2;
+            }
+            else if(winner > 1) {
+                currentNode.numWins += 1;
+            }
             currentNode = currentNode.getParent();
         }
     }
@@ -87,15 +89,32 @@ public class MonteCarlo {
     // One complete iteration of MCTS
     public void iteration() {
         Node currentNode = selection();
+        System.out.print("Chosen node: ");
+        currentNode.printNode();
+        currentNode.getState().printBoard();
         int winner;
         expansion(currentNode);
-        for(Node node: currentNode.getChildren()) {
-            winner = simulation(currentNode.getState(), this.player);
+        if (currentNode.state.gameOver()) {
+            winner = currentNode.state.getWinner();
             backpropagate(currentNode, winner);
         }
+        else {
+            for(Node node : currentNode.getChildren()) {
+                winner = simulation(node.getState());
+                backpropagate(node, winner);
+            }
+//            Node node = currentNode.getChildren().get((int)Math.random()* (currentNode.getNumChildren()-1));
+//            winner = simulation(node.getState());
+//            backpropagate(node, winner);
+
+        }
+
     }
 
     public PentagoMove bestMove() {
+//        for(int i=0; i<10; i++) {
+//            iteration();
+//        }
         long x = System.currentTimeMillis();
         while(System.currentTimeMillis() - x < 1500) {
             iteration();
@@ -105,15 +124,21 @@ public class MonteCarlo {
         float currentMax = 0;
         float temp;
         for(Node node: this.tree.root.getChildren()) {
-            temp = (float)node.getNumWins()/(float)node.getNumGames();
+            temp = (float)node.getNumGames();
             if(temp > currentMax) {
                 currentMax = temp;
                 bestNode = node;
-                bestMove = node.getMove();
+                bestMove = bestNode.getMove();
             }
         }
         System.out.print("Best node: ");
         bestNode.printNode();
+        System.out.println("Tree has: " + String.valueOf(this.tree.getAllNodes().size()) + " total nodes");
+        for(int i=0; i < tree.root.getChildren().size(); i++) {
+                System.out.print("Node " + String.valueOf(i) + " ");
+                tree.root.getChildren().get(i).printNode();
+                //tree.root.getChildren().get(i).getState().printBoard();
+        }
         return bestMove;
     }
 }

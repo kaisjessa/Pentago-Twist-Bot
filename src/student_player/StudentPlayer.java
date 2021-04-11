@@ -35,7 +35,13 @@ public class StudentPlayer extends PentagoPlayer {
         Move myMove;
         // If we have a critical move, i.e., win or lose in one move, choose that move
         // Otherwise, run Monte Carlo Tree Search
-        myMove = MyTools.bestMove(boardState);
+        //myMove = MyTools.bestMove(boardState);
+
+        MonteCarlo mcts = new MonteCarlo(boardState, boardState.getTurnPlayer());
+        myMove = mcts.bestMove();
+        System.out.println("USING MCTS");
+        System.out.print("Root node: ");
+        mcts.tree.root.printNode();
 
         // Return your move to be processed by the server.
         return myMove;
