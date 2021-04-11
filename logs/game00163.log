@@ -1,0 +1,11 @@
+# Server version 0.08 running on DESKTOP-HSPQEDE:8123
+# Game ID: 163
+# Board class: pentago_twist.PentagoBoard
+# Timeout: 20000
+# First Move Timeout: 30000
+# Date: Sat Apr 10 23:27:47 EDT 2021
+# Player 1: Player-0, 'RandomPlayer', running on 127.0.0.1
+# Player 2: Player-1, '260910524', running on 127.0.0.1
+START Player-0 RandomPlayer
+START Player-1 260910524
+4 2 0 1 0

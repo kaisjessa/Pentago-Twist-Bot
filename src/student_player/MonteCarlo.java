@@ -16,9 +16,9 @@ public class MonteCarlo {
     public MonteCarlo(PentagoBoardState state, int player) {
         this.player = player;
         tree = new Tree(state);
-        for(PentagoMove move : state.getAllLegalMoves()) {
-            tree.addNode(state, move, tree.root);
-        }
+//        for(PentagoMove move : state.getAllLegalMoves()) {
+//            tree.addNode(state, move, tree.root);
+//        }
     }
 
     // Calculates UCT of given node, used as tree policy
@@ -89,8 +89,10 @@ public class MonteCarlo {
         Node currentNode = selection();
         int winner;
         expansion(currentNode);
-        winner = simulation(currentNode.getState(), this.player);
-        backpropagate(currentNode, winner);
+        for(Node node: currentNode.getChildren()) {
+            winner = simulation(currentNode.getState(), this.player);
+            backpropagate(currentNode, winner);
+        }
     }
 
     public PentagoMove bestMove() {
@@ -98,16 +100,20 @@ public class MonteCarlo {
         while(System.currentTimeMillis() - x < 1500) {
             iteration();
         }
-        PentagoMove bestMove = this.tree.root.getChildren().get(0).getMove();
+        Node bestNode = this.tree.root.getChildren().get(0);
+        PentagoMove bestMove = bestNode.getMove();
         float currentMax = 0;
         float temp;
         for(Node node: this.tree.root.getChildren()) {
             temp = (float)node.getNumWins()/(float)node.getNumGames();
             if(temp > currentMax) {
                 currentMax = temp;
+                bestNode = node;
                 bestMove = node.getMove();
             }
         }
+        System.out.print("Best node: ");
+        bestNode.printNode();
         return bestMove;
     }
 }

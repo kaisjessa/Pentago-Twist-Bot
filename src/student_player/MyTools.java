@@ -53,6 +53,7 @@ public class MyTools {
         MonteCarlo mcts = new MonteCarlo(boardState, player);
         currentMove = mcts.bestMove();
         System.out.println("USING MCTS");
+        System.out.print("Root node: ");
         mcts.tree.root.printNode();
         return(currentMove);
 

@@ -5,11 +5,11 @@ import java.io.IOException;
 //Author: Lilly Tong, Eric Crawford
 //
 // Assumes all the code in ``src`` has been compiled, and the resulting
-// class files were stored in ``bin``.
+// class files were stored in ``out/production/COMP424-Project``.
 //
 // From the root directory of the project, run
 //
-//     java -cp bin autoplay.Autoplay n_games
+//     java -cp out/production/COMP424-Project autoplay.Autoplay n_games
 //
 // Note: The script is currently set up to have the StudentPlayer play against
 // RandomHusPlayer. In order to have different players participate, you need
@@ -34,17 +34,17 @@ public class Autoplay {
         }
 
         try {
-            ProcessBuilder server_pb = new ProcessBuilder("java", "-cp", "bin", "boardgame.Server", "-ng", "-k");
+            ProcessBuilder server_pb = new ProcessBuilder("java", "-cp", "out/production/COMP424-Project", "boardgame.Server", "-ng", "-k");
             server_pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
             Process server = server_pb.start();
 
-            ProcessBuilder client1_pb = new ProcessBuilder("java", "-cp", "bin", "-Xms520m", "-Xmx520m",
-                    "boardgame.Client", "student_player.StudentPlayer");
+            ProcessBuilder client1_pb = new ProcessBuilder("java", "-cp", "out/production/COMP424-Project", "-Xms520m", "-Xmx520m",
+                    "boardgame.Client", "pentago_twist.RandomPentagoPlayer");
             client1_pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
-            ProcessBuilder client2_pb = new ProcessBuilder("java", "-cp", "bin", "-Xms520m", "-Xmx520m",
-                    "boardgame.Client", "pentago_twist.RandomPentagoPlayer");
+            ProcessBuilder client2_pb = new ProcessBuilder("java", "-cp", "out/production/COMP424-Project", "-Xms520m", "-Xmx520m",
+                    "boardgame.Client", "student_player.StudentPlayer");
             client2_pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
             for (int i = 0; i < n_games; i++) {
