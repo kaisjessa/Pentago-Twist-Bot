@@ -32,27 +32,10 @@ public class StudentPlayer extends PentagoPlayer {
         // Is random the best you can do?
         //Move myMove = boardState.getRandomMove();
 
-        //Move myMove = MyTools.bestMove(boardState);
-
-        int player = boardState.getTurnPlayer();
         Move myMove;
-        // If we have a critical move, i.e., win or lose in one move
-        PentagoMove tempMove = MyTools.bestMove(boardState);
-//        if(MyTools.evalMove(boardState, tempMove, player) != 0 || MyTools.evalOtherMove(boardState, tempMove, player) != 0) {
-//            myMove = MyTools.bestMove(boardState);
-//            System.out.println("USING GREEDY MOVE");
-//        }
-//        // Otherwise, perform Monte Carlo Tree Search
-//        else {
-//            MonteCarlo mcts = new MonteCarlo(boardState, player);
-//            myMove = mcts.bestMove();
-//            mcts.tree.root.printNode();
-//            System.out.println("USING MCTS");
-//        }
-        myMove = tempMove;
-
-//        mcts.tree.printChildren(mcts.tree.root);
-//        System.out.println("Number of children: " + mcts.tree.root.getNumChildren());
+        // If we have a critical move, i.e., win or lose in one move, choose that move
+        // Otherwise, run Monte Carlo Tree Search
+        myMove = MyTools.bestMove(boardState);
 
         // Return your move to be processed by the server.
         return myMove;

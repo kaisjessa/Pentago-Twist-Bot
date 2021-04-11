@@ -28,13 +28,34 @@ public class MyTools {
     public static PentagoMove bestMove(PentagoBoardState boardState) {
         ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
         int player = boardState.getTurnPlayer();
-        PentagoMove current_move;
+        PentagoMove currentMove;
         int numMoves = legalMoves.size();
 
+        // If we can win in the next move
+        legalMoves.sort(Comparator.comparingInt(a -> evalMove(boardState, a, player)));
+        currentMove = legalMoves.get(numMoves-1);
+        //System.out.println("Best move eval: " + String.valueOf(evalMove(boardState, currentMove, player)));
+        if(evalMove(boardState, currentMove, player) != 0) {
+            System.out.println("ENSURING WIN IN ONE");
+            return(currentMove);
+        }
+
+        // If we can prevent a loss in the next move
         legalMoves.sort(Comparator.comparingInt(a -> evalOtherMove(boardState, a, player)));
-        current_move = legalMoves.get(numMoves-1);
-        System.out.println("Best move eval: " + String.valueOf(evalMove(boardState, current_move, player)));
-        return(current_move);
+        currentMove = legalMoves.get(numMoves-1);
+        //System.out.println("Worst other move eval: " + String.valueOf(evalOtherMove(boardState, legalMoves.get(0), player)));
+        if(evalOtherMove(boardState, legalMoves.get(0), player) == -1) {
+            System.out.println("PREVENTING LOSS IN ONE");
+            return(currentMove);
+        }
+
+        // If we cannot prevent an immediate loss or win, run Monte Carlo Tree Search
+        MonteCarlo mcts = new MonteCarlo(boardState, player);
+        currentMove = mcts.bestMove();
+        System.out.println("USING MCTS");
+        mcts.tree.root.printNode();
+        return(currentMove);
+
     }
 
     // Evaluates opponents next move after trying our move
@@ -59,11 +80,11 @@ public class MyTools {
     // Returns 0 unless we win or lose
     public static int evaluation(PentagoBoardState boardState, int player) {
         int winner = boardState.getWinner();
-        if (winner == player) return -1;
+        if (winner == player) return 1;
         else if (winner == Integer.MAX_VALUE - 1) {
             return 0;
         }
-        return 1;
+        return -1;
 
     }
 

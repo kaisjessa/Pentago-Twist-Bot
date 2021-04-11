@@ -48,6 +48,7 @@ public class MonteCarlo {
         return current;
     }
 
+    // Create child nodes of selected node
     public void expansion(Node node) {
         PentagoBoardState state = node.getState();
         for(PentagoMove move: state.getAllLegalMoves()) {
@@ -64,20 +65,20 @@ public class MonteCarlo {
             newState.processMove(nextMove);
         }
         int winner = newState.getWinner();
-        // Return 2 if we win
-        if(winner == player) return(2);
+        // Return 1 if we win
+        if(winner == player) return(1);
         // Return 0 if we lose
         if(winner == 1 - player) return(0);
-        // Return 1 if we tie
-        return(1);
+        // Return 0 if we tie
+        return(0);
     }
 
     // Update the parent nodes after a simulation
     public void backpropagate(Node node, int winner) {
         Node currentNode = node;
         while(currentNode != null) {
-            // Increment by 2 since win = 2, tie = 1, loss = 0
-            currentNode.numGames += 2;
+            // Increment by 1 since win = 1, tie = 0, loss = 0
+            currentNode.numGames += 1;
             currentNode.numWins += winner;
             currentNode = currentNode.getParent();
         }
@@ -94,7 +95,7 @@ public class MonteCarlo {
 
     public PentagoMove bestMove() {
         long x = System.currentTimeMillis();
-        while(System.currentTimeMillis() - x < 1000) {
+        while(System.currentTimeMillis() - x < 1500) {
             iteration();
         }
         PentagoMove bestMove = this.tree.root.getChildren().get(0).getMove();
