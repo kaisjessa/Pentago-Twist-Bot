@@ -11,14 +11,12 @@ public class MonteCarlo {
 
     Tree tree;
     int player;
+    int maxDepth = 0;
 
     // Constructor initializes tree using input board state
     public MonteCarlo(PentagoBoardState state, int player) {
         this.player = player;
         tree = new Tree(state);
-//        for(PentagoMove move : state.getAllLegalMoves()) {
-//            tree.addNode(state, move, tree.root);
-//        }
     }
 
     // Calculates UCT of given node, used as tree policy
@@ -36,7 +34,12 @@ public class MonteCarlo {
         Node current = this.tree.root;
         float currentMax;
         Node nextNode;
+        int depth = 0;
         while(current.getNumChildren() > 0) {
+            depth += 1;
+            if(depth > this.maxDepth) {
+                this.maxDepth = depth;
+            }
             nextNode = current.children.get(0);
             currentMax = UCT(nextNode);
             for(Node node : current.getChildren()) {
@@ -53,7 +56,7 @@ public class MonteCarlo {
     // Create child nodes of selected node
     public void expansion(Node node) {
         PentagoBoardState state = node.getState();
-        if (!node.state.gameOver()) {
+        if (!node.state.gameOver() && node.getNumGames() > 0) {
             for (PentagoMove move : state.getAllLegalMoves()) {
                 tree.addNode(state, move, node);
             }
@@ -76,7 +79,7 @@ public class MonteCarlo {
         Node currentNode = node;
         while(currentNode != null) {
             currentNode.numGames += 2;
-            if(currentNode.getState().getTurnPlayer() == winner) {
+            if(this.player == winner) {
                 currentNode.numWins += 2;
             }
             else if(winner > 1) {
@@ -89,23 +92,27 @@ public class MonteCarlo {
     // One complete iteration of MCTS
     public void iteration() {
         Node currentNode = selection();
-        System.out.print("Chosen node: ");
-        currentNode.printNode();
-        currentNode.getState().printBoard();
+        //System.out.print("Chosen node: ");
+        //currentNode.printNode();
+        //currentNode.getState().printBoard();
         int winner;
         expansion(currentNode);
         if (currentNode.state.gameOver()) {
             winner = currentNode.state.getWinner();
             backpropagate(currentNode, winner);
         }
+        else if(currentNode.getNumGames() == 0) {
+            winner = simulation(currentNode.getState());
+            backpropagate(currentNode, winner);
+        }
         else {
-            for(Node node : currentNode.getChildren()) {
-                winner = simulation(node.getState());
-                backpropagate(node, winner);
-            }
-//            Node node = currentNode.getChildren().get((int)Math.random()* (currentNode.getNumChildren()-1));
-//            winner = simulation(node.getState());
-//            backpropagate(node, winner);
+//            for(Node node : currentNode.getChildren()) {
+//                winner = simulation(node.getState());
+//                backpropagate(node, winner);
+//            }
+            Node node = currentNode.getChildren().get(0);
+            winner = simulation(node.getState());
+            backpropagate(node, winner);
 
         }
 
@@ -134,11 +141,12 @@ public class MonteCarlo {
         System.out.print("Best node: ");
         bestNode.printNode();
         System.out.println("Tree has: " + String.valueOf(this.tree.getAllNodes().size()) + " total nodes");
-        for(int i=0; i < tree.root.getChildren().size(); i++) {
-                System.out.print("Node " + String.valueOf(i) + " ");
-                tree.root.getChildren().get(i).printNode();
-                //tree.root.getChildren().get(i).getState().printBoard();
-        }
+        System.out.println("Tree depth: " + String.valueOf(this.maxDepth));
+//        for(int i=0; i < tree.root.getChildren().size(); i++) {
+//                System.out.print("Node " + String.valueOf(i) + " ");
+//                tree.root.getChildren().get(i).printNode();
+//                //tree.root.getChildren().get(i).getState().printBoard();
+//        }
         return bestMove;
     }
 }
