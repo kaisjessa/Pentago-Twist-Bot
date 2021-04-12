@@ -123,7 +123,7 @@ public class MonteCarlo {
 //            iteration();
 //        }
         long x = System.currentTimeMillis();
-        while(System.currentTimeMillis() - x < 1500) {
+        while(System.currentTimeMillis() - x < 1250) {
             iteration();
         }
         Node bestNode = this.tree.root.getChildren().get(0);

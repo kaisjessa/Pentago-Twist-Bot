@@ -25,7 +25,7 @@ public class MyTools {
 //    }
 
     // Returns the best move if we are able to win or stop a loss in the next turn
-    public static PentagoMove bestMove(PentagoBoardState boardState) {
+    public static PentagoMove bestMCTSMove(PentagoBoardState boardState) {
         ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
         int player = boardState.getTurnPlayer();
         PentagoMove currentMove;
@@ -55,6 +55,34 @@ public class MyTools {
         System.out.println("USING MCTS");
         System.out.print("Root node: ");
         mcts.tree.root.printNode();
+        return(currentMove);
+
+    }
+
+    public static PentagoMove bestGreedyMove(PentagoBoardState boardState) {
+        ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
+        int player = boardState.getTurnPlayer();
+        PentagoMove currentMove;
+        int numMoves = legalMoves.size();
+
+        // If we can win in the next move
+        legalMoves.sort(Comparator.comparingInt(a -> evalMove(boardState, a, player)));
+        currentMove = legalMoves.get(numMoves-1);
+        //System.out.println("Best move eval: " + String.valueOf(evalMove(boardState, currentMove, player)));
+        if(evalMove(boardState, currentMove, player) != 0) {
+            System.out.println("ENSURING WIN IN ONE");
+            return(currentMove);
+        }
+
+        // If we can prevent a loss in the next move
+        legalMoves.sort(Comparator.comparingInt(a -> evalOtherMove(boardState, a, player)));
+        currentMove = legalMoves.get(numMoves-1);
+        //System.out.println("Worst other move eval: " + String.valueOf(evalOtherMove(boardState, legalMoves.get(0), player)));
+        if(evalOtherMove(boardState, legalMoves.get(0), player) == -1) {
+            System.out.println("PREVENTING LOSS IN ONE");
+            return(currentMove);
+        }
+        currentMove = (PentagoMove)boardState.getRandomMove();
         return(currentMove);
 
     }
