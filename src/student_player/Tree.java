@@ -17,14 +17,6 @@ public class Tree {
         this.allNodes.add(this.root);
     }
 
-//    public void addNode(PentagoBoardState state, Node parent) {
-//        Node newNode = new Node(state);
-//        parent.addChild(newNode);
-//        newNode.setParent(parent);
-//        this.allNodes.add(newNode);
-//
-//    }
-
     public void addNode(PentagoBoardState oldState, PentagoMove move, Node parent) {
         PentagoBoardState newState = (PentagoBoardState)oldState.clone();
         newState.processMove(move);

@@ -49,7 +49,7 @@ public class Server implements Runnable {
     protected static final int DEFAULT_PORT = 8123;
 
     public static final int DEFAULT_TIMEOUT = 2000;
-    private static final int DEFAULT_TIMEOUT_CUSHION = 0;
+    private static final int DEFAULT_TIMEOUT_CUSHION = 1000;
 
     public static final int FIRST_MOVE_TIMEOUT = 30000;
     private static final int FIRST_MOVE_TIMEOUT_CUSHION = 0;
@@ -61,7 +61,7 @@ public class Server implements Runnable {
     protected static final int MAX_SERVERS = 10;
 
     public static String log_dir = "logs";
-    protected static final String OUTCOME_FILE = "outcomes.txt";
+    protected static final String OUTCOME_FILE = "new_outcomes.txt";
     protected static final String LOG_PREFIX = "game";
     protected static final String LOG_SUFFIX = ".log";
 

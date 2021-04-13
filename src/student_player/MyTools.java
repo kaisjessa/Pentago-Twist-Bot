@@ -12,19 +12,8 @@ public class MyTools {
         return Math.random();
     }
 
-//    public static PentagoBoardState test(PentagoBoardState boardState) {
-//        PentagoBoardState newBoardState;
-//        newBoardState = (PentagoBoardState) boardState.clone();
-//
-//        ArrayList<PentagoMove> legalMoves = newBoardState.getAllLegalMoves();
-//        for (PentagoMove move : legalMoves) {
-//            System.out.println(move.toPrettyString());
-//        }
-//
-//        return newBoardState;
-//    }
-
     // Returns the best move if we are able to win or stop a loss in the next turn
+    // Otherwise, perform MCTS
     public static PentagoMove bestMCTSMove(PentagoBoardState boardState) {
         ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
         int player = boardState.getTurnPlayer();
@@ -34,31 +23,31 @@ public class MyTools {
         // If we can win in the next move
         legalMoves.sort(Comparator.comparingInt(a -> evalMove(boardState, a, player)));
         currentMove = legalMoves.get(numMoves-1);
-        //System.out.println("Best move eval: " + String.valueOf(evalMove(boardState, currentMove, player)));
         if(evalMove(boardState, currentMove, player) != 0) {
-            System.out.println("ENSURING WIN IN ONE");
+            //System.out.println("ENSURING WIN IN ONE");
             return(currentMove);
         }
 
         // If we can prevent a loss in the next move
         legalMoves.sort(Comparator.comparingInt(a -> evalOtherMove(boardState, a, player)));
         currentMove = legalMoves.get(numMoves-1);
-        //System.out.println("Worst other move eval: " + String.valueOf(evalOtherMove(boardState, legalMoves.get(0), player)));
         if(evalOtherMove(boardState, legalMoves.get(0), player) == -1) {
-            System.out.println("PREVENTING LOSS IN ONE");
+            //System.out.println("PREVENTING LOSS IN ONE");
             return(currentMove);
         }
 
         // If we cannot prevent an immediate loss or win, run Monte Carlo Tree Search
         MonteCarlo mcts = new MonteCarlo(boardState, player);
         currentMove = mcts.bestMove();
-        System.out.println("USING MCTS");
-        System.out.print("Root node: ");
-        mcts.tree.root.printNode();
+        //System.out.println("USING MCTS");
+        //System.out.print("Root node: ");
+        //mcts.tree.root.printNode();
         return(currentMove);
 
     }
 
+    // Returns the best move if we are able to win or prevent a loss in the next turn
+    // Otherwise, return a random move
     public static PentagoMove bestGreedyMove(PentagoBoardState boardState) {
         ArrayList<PentagoMove> legalMoves = boardState.getAllLegalMoves();
         int player = boardState.getTurnPlayer();
@@ -115,34 +104,6 @@ public class MyTools {
         }
         return -1;
 
-    }
-
-//    public ArrayList<PentagoMove> getGoodMoves(PentagoBoardState state) {
-//        ArrayList<PentagoMove> moves = new ArrayList<PentagoMove>();
-//        for(int i = 0; i < PentagoBoardState.BOARD_SIZE; i++) {
-//            for(int j = 0; j < PentagoBoardState.BOARD_SIZE; j++) {
-//                if(state.getPieceAt(i,j) == Piece.EMPTY) {
-//                    for(int[] pair : getAdjacent(i, j)) {
-//                        if(state.getPieceAt(pair[0], pair[1]) != Piece.EMPTY) {
-//
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    public ArrayList<int[]> getAdjacent(int x, int y) {
-        ArrayList<int[]> pairs = new ArrayList<int[]>();
-        for(int i=-1; i<=1; i++) {
-            for(int j=-1; j<=1; j++) {
-                if(0 <= x + i && x+i < PentagoBoardState.BOARD_SIZE && 0 <= y + j && y+j <= PentagoBoardState.BOARD_SIZE) {
-                    int[] temp = new int[]{x+i, y+j};
-                    pairs.add(temp);
-                }
-            }
-        }
-        return(pairs);
     }
 
 }

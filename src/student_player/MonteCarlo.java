@@ -92,9 +92,6 @@ public class MonteCarlo {
     // One complete iteration of MCTS
     public void iteration() {
         Node currentNode = selection();
-        //System.out.print("Chosen node: ");
-        //currentNode.printNode();
-        //currentNode.getState().printBoard();
         int winner;
         expansion(currentNode);
         if (currentNode.state.gameOver()) {
@@ -106,10 +103,6 @@ public class MonteCarlo {
             backpropagate(currentNode, winner);
         }
         else {
-//            for(Node node : currentNode.getChildren()) {
-//                winner = simulation(node.getState());
-//                backpropagate(node, winner);
-//            }
             Node node = currentNode.getChildren().get(0);
             winner = simulation(node.getState());
             backpropagate(node, winner);
@@ -118,14 +111,13 @@ public class MonteCarlo {
 
     }
 
+    // Repeat iterations while under the time limit
     public PentagoMove bestMove() {
-//        for(int i=0; i<10; i++) {
-//            iteration();
-//        }
         long x = System.currentTimeMillis();
-        while(System.currentTimeMillis() - x < 1250) {
+        while(System.currentTimeMillis() - x < 1000) {
             iteration();
         }
+        // Return the move that leads to the best child node of the root
         Node bestNode = this.tree.root.getChildren().get(0);
         PentagoMove bestMove = bestNode.getMove();
         float currentMax = 0;
@@ -142,11 +134,6 @@ public class MonteCarlo {
         bestNode.printNode();
         System.out.println("Tree has: " + String.valueOf(this.tree.getAllNodes().size()) + " total nodes");
         System.out.println("Tree depth: " + String.valueOf(this.maxDepth));
-//        for(int i=0; i < tree.root.getChildren().size(); i++) {
-//                System.out.print("Node " + String.valueOf(i) + " ");
-//                tree.root.getChildren().get(i).printNode();
-//                //tree.root.getChildren().get(i).getState().printBoard();
-//        }
         return bestMove;
     }
 }

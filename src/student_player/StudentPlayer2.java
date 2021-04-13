@@ -15,7 +15,7 @@ public class StudentPlayer2 extends PentagoPlayer {
      * associate you with your agent. The constructor should do nothing else.
      */
     public StudentPlayer2() {
-        super("MCTS");
+        super("MCTS+BruteForce");
     }
 
     /**
@@ -35,10 +35,10 @@ public class StudentPlayer2 extends PentagoPlayer {
         Move myMove;
         // If we have a critical move, i.e., win or lose in one move, choose that move
         // Otherwise, run Monte Carlo Tree Search
-        //myMove = MyTools.bestGreedyMove(boardState);
+        myMove = MyTools.bestMCTSMove(boardState);
 
-        MonteCarlo mcts = new MonteCarlo(boardState, boardState.getTurnPlayer());
-        myMove = mcts.bestMove();
+//        MonteCarlo mcts = new MonteCarlo(boardState, boardState.getTurnPlayer());
+//        myMove = mcts.bestMove();
 //        System.out.println("USING MCTS");
 //        System.out.print("Root node: ");
 //        mcts.tree.root.printNode();
