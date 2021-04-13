@@ -130,10 +130,6 @@ public class MonteCarlo {
                 bestMove = bestNode.getMove();
             }
         }
-        System.out.print("Best node: ");
-        bestNode.printNode();
-        System.out.println("Tree has: " + String.valueOf(this.tree.getAllNodes().size()) + " total nodes");
-        System.out.println("Tree depth: " + String.valueOf(this.maxDepth));
         return bestMove;
     }
 }

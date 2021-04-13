@@ -39,9 +39,6 @@ public class MyTools {
         // If we cannot prevent an immediate loss or win, run Monte Carlo Tree Search
         MonteCarlo mcts = new MonteCarlo(boardState, player);
         currentMove = mcts.bestMove();
-        //System.out.println("USING MCTS");
-        //System.out.print("Root node: ");
-        //mcts.tree.root.printNode();
         return(currentMove);
 
     }
